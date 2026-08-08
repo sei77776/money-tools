@@ -105,11 +105,26 @@ describe("isEnabled: 表示可否の判定", () => {
   });
 });
 
-describe("提携前の初期状態", () => {
-  it("初期状態では全オファーのurlが空（偽リンクを公開しない）", () => {
-    const all = [...AFFILIATE.furusato, ...AFFILIATE.kabe];
-    const configured = all.filter((o) => normalizeLink(o.url));
-    // リンクを設定したらこのテストは落ちる。設定した証拠なので期待値を更新すること。
-    expect(configured.length).toBe(0);
+describe("設定済みリンクの健全性", () => {
+  it("楽天ふるさと納税のリンクが設定済みで、https URLに正規化される", () => {
+    const rakuten = AFFILIATE.furusato.find((o) => o.provider === "rakuten");
+    const url = normalizeLink(rakuten.url);
+    expect(url).toMatch(/^https:\/\//);
+  });
+
+  it("ふるさと納税ページに表示されるオファーが1件以上ある", () => {
+    expect(isEnabled(AFFILIATE.furusato)).toBe(true);
+  });
+
+  it("年収の壁ページは提携案件が無いため非表示のまま", () => {
+    expect(isEnabled(AFFILIATE.kabe)).toBe(false);
+  });
+
+  it("設定済みの全リンクがhttp/httpsであること（不正スキームの混入防止）", () => {
+    for (const o of [...AFFILIATE.furusato, ...AFFILIATE.kabe]) {
+      if ((o.url ?? "").trim()) {
+        expect(normalizeLink(o.url)).toMatch(/^https?:\/\//);
+      }
+    }
   });
 });

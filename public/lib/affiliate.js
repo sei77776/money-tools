@@ -35,8 +35,8 @@ export const AFFILIATE = {
     {
       name: "楽天ふるさと納税",
       desc: "楽天市場と同じIDで寄付でき、買い物と同じ操作感。返礼品の掲載数が多い。",
-      provider: "rakuten", // 楽天アフィリエイトで発行したリンクを貼る
-      url: "",
+      provider: "rakuten", // 楽天アフィリエイトで発行したリンク（2026-08-08 設定）
+      url: "https://a.r10.to/hPgsSr",
     },
   ],
 

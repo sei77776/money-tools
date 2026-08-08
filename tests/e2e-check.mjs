@@ -64,11 +64,20 @@ await page.click("#calc-form button.primary");
 const note90 = await page.textContent("#insured-note");
 check("kabe: 90万・51人以上・週20hで加入（年収非依存）", note90.includes("加入する想定"), note90.trim());
 
-// アフィリエイト枠: 提携前（URL未設定）は枠ごと非表示
-check("ad: 提携前は広告枠が非表示（kabe）", await page.locator("#offers").isHidden());
+// アフィリエイト枠: kabeは提携案件が無いため非表示のまま
+check("ad: 広告枠が非表示（kabe・提携案件なし）", await page.locator("#offers").isHidden());
+
+// アフィリエイト枠: furusatoは楽天リンク設定済みなので実際に表示される
 await page.goto(`${BASE}/furusato.html`);
 await page.click("#calc-form button.primary");
-check("ad: 提携前は広告枠が非表示（furusato）", await page.locator("#offers").isHidden());
+check("ad: 広告枠が表示される（furusato）", await page.locator("#offers").isVisible());
+check("ad: 「広告」ラベルが見える", (await page.textContent("#offers .ad-label")).trim() === "広告");
+check("ad: 開示文が見える", (await page.textContent("#offers")).includes("成果報酬"));
+const adLink = page.locator("#offers a.offer").first();
+const adHref = await adLink.getAttribute("href");
+check("ad: hrefがhttpsの実リンク", /^https:\/\//.test(adHref), adHref);
+check("ad: rel属性", (await adLink.getAttribute("rel")) === "sponsored nofollow noopener");
+check("ad: 別タブで開く", (await adLink.getAttribute("target")) === "_blank");
 
 // アフィリエイト枠: URLを設定した場合のレンダリング要件を実ブラウザで検証
 const adHtml = await page.evaluate(async () => {
