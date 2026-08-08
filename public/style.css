@@ -284,6 +284,36 @@ details summary { cursor: pointer; font-weight: 600; min-height: 44px; display: 
 .feature b { display: block; }
 .feature span { font-size: 0.88rem; color: var(--ink-soft); }
 
+/* ---- アフィリエイト枠（ステマ規制: 「広告」ラベルを明瞭に） ---- */
+.ad-label {
+  background: var(--ink-soft);
+  color: var(--card);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex: none;
+}
+.ad-disclosure { margin: 0 0 12px; }
+a.offer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  transition: border-color 0.18s, transform 0.18s;
+}
+a.offer:hover { border-color: var(--brand); transform: translateY(-2px); }
+a.offer b { font-size: 1rem; }
+a.offer span { font-size: 0.88rem; color: var(--ink-soft); }
+a.offer .cta { color: var(--brand); font-weight: 700; font-size: 0.9rem; }
+
 /* ---- チャート ---- */
 svg.curve {
   width: 100%;

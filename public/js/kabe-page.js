@@ -1,5 +1,7 @@
 import { isInsured, detectWalls, netIncomeCurve } from "../lib/kabe.js";
 import { netIncome } from "../lib/income.js";
+import { AFFILIATE } from "../lib/affiliate.js";
+import { renderOffers } from "./affiliate-ui.js";
 
 const yen = (n) => n.toLocaleString("ja-JP");
 const $ = (id) => document.getElementById(id);
@@ -38,6 +40,7 @@ function run() {
       .join("");
 
   renderChart(income, opts);
+  renderOffers("offers", AFFILIATE.kabe, "働き方を見直すときの選択肢");
   $("result").hidden = false;
 }
 

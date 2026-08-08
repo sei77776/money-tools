@@ -64,12 +64,34 @@ await page.click("#calc-form button.primary");
 const note90 = await page.textContent("#insured-note");
 check("kabe: 90万・51人以上・週20hで加入（年収非依存）", note90.includes("加入する想定"), note90.trim());
 
+// アフィリエイト枠: 提携前（URL未設定）は枠ごと非表示
+check("ad: 提携前は広告枠が非表示（kabe）", await page.locator("#offers").isHidden());
+await page.goto(`${BASE}/furusato.html`);
+await page.click("#calc-form button.primary");
+check("ad: 提携前は広告枠が非表示（furusato）", await page.locator("#offers").isHidden());
+
+// アフィリエイト枠: URLを設定した場合のレンダリング要件を実ブラウザで検証
+const adHtml = await page.evaluate(async () => {
+  const { renderOffers } = await import("./js/affiliate-ui.js");
+  const el = document.createElement("div");
+  el.id = "ad-test";
+  document.body.appendChild(el);
+  renderOffers("ad-test", [{ name: "テスト提携先", desc: "説明", url: "https://example.com/aff" }], "広告見出し");
+  return el.innerHTML;
+});
+check("ad: 「広告」ラベルが表示される（ステマ規制）", /class="ad-label">広告</.test(adHtml));
+check("ad: 開示文が表示される", adHtml.includes("成果報酬"));
+check("ad: rel=sponsored nofollow noopener が付く", adHtml.includes('rel="sponsored nofollow noopener"'));
+check("ad: 別タブで開く", adHtml.includes('target="_blank"'));
+
 // legal
 await page.goto(`${BASE}/legal.html`);
 check("legal: タイトル", (await page.title()).includes("免責事項・プライバシーポリシー"));
 const legalBody = await page.textContent("main");
 check("legal: 外部送信の表示（Google Fonts）", legalBody.includes("Google Fonts") && legalBody.includes("IPアドレス"));
 check("legal: localStorageキーの明記と削除手段", legalBody.includes("money-tools.furusato.records.v1") && legalBody.includes("削除"));
+check("legal: アフィリエイト広告の開示", legalBody.includes("アフィリエイト広告") && legalBody.includes("成果報酬") && legalBody.includes("「広告」と明示"));
+check("legal: 入力データが広告先に送信されない旨の明記", legalBody.includes("広告のリンク先に送信されることはありません"));
 
 const SHOTS = new URL("../../docs/money-tools/", import.meta.url).pathname;
 await page.goto(`${BASE}/kabe.html`);

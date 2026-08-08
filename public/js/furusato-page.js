@@ -1,5 +1,7 @@
 import { furusatoLimit } from "../lib/furusato.js";
 import { PARAMS } from "../lib/params2026.js";
+import { AFFILIATE } from "../lib/affiliate.js";
+import { renderOffers } from "./affiliate-ui.js";
 
 const yen = (n) => n.toLocaleString("ja-JP");
 const $ = (id) => document.getElementById(id);
@@ -27,6 +29,7 @@ function runCalc() {
     `<tr><th>所得税の限界税率</th><td class="num">${(r.breakdown.marginalRate * 100).toFixed(0)}%</td></tr>`;
   $("result").hidden = false;
   localStorage.setItem(LIMIT_KEY, String(r.safeLimit));
+  renderOffers("offers", AFFILIATE.furusato, "この上限額の範囲で寄付先を探す");
   renderRecords();
 }
 
