@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { AFFILIATE, activeOffers, isEnabled } from "../public/lib/affiliate.js";
+import { AFFILIATE, activeOffers, isEnabled, normalizeLink } from "../public/lib/affiliate.js";
 
 describe("アフィリエイト設定", () => {
   it("各オファーは名前・説明・urlの枠を持つ", () => {
@@ -16,6 +16,52 @@ describe("アフィリエイト設定", () => {
   it("広告であることの表示文言が定義されている（ステマ規制対応）", () => {
     expect(AFFILIATE.label).toBe("広告");
     expect(AFFILIATE.disclosure).toMatch(/広告|アフィリエイト/);
+  });
+
+  it("ふるさと納税の先頭は楽天ふるさと納税（楽天アフィリエイトを利用）", () => {
+    expect(AFFILIATE.furusato[0].name).toContain("楽天ふるさと納税");
+    expect(AFFILIATE.furusato[0].provider).toBe("rakuten");
+  });
+});
+
+describe("normalizeLink: 楽天の発行リンクをそのまま貼れるようにする", () => {
+  it("素のURLはそのまま返す", () => {
+    expect(normalizeLink("https://hb.afl.rakuten.co.jp/hgc/xxxx/")).toBe(
+      "https://hb.afl.rakuten.co.jp/hgc/xxxx/"
+    );
+  });
+
+  it("前後の空白・改行を除去する", () => {
+    expect(normalizeLink("  https://example.com/a \n")).toBe("https://example.com/a");
+  });
+
+  it("楽天が発行するHTMLスニペットから最初のhrefを抽出する", () => {
+    const snippet = `<a href="https://hb.afl.rakuten.co.jp/hgc/AAA/" target="_blank"><img src="https://hbb.afl.rakuten.co.jp/img.gif"></a><a href="https://hb.afl.rakuten.co.jp/hgc/BBB/">楽天ふるさと納税</a>`;
+    expect(normalizeLink(snippet)).toBe("https://hb.afl.rakuten.co.jp/hgc/AAA/");
+  });
+
+  it("シングルクォートのhrefも抽出できる", () => {
+    expect(normalizeLink("<a href='https://example.com/x'>テキスト</a>")).toBe(
+      "https://example.com/x"
+    );
+  });
+
+  it("プロトコル相対リンク（//で始まる）はhttps:を補う", () => {
+    expect(normalizeLink('<a href="//hb.afl.rakuten.co.jp/hgc/CCC/">x</a>')).toBe(
+      "https://hb.afl.rakuten.co.jp/hgc/CCC/"
+    );
+  });
+
+  it("空・未定義は空文字を返す", () => {
+    expect(normalizeLink("")).toBe("");
+    expect(normalizeLink(undefined)).toBe("");
+    expect(normalizeLink("   ")).toBe("");
+  });
+
+  it("http/https以外のスキームは拒否する（javascript: 等の混入防止）", () => {
+    expect(normalizeLink("javascript:alert(1)")).toBe("");
+    expect(normalizeLink('<a href="javascript:alert(1)">x</a>')).toBe("");
+    expect(normalizeLink("data:text/html,<script>")).toBe("");
   });
 });
 
@@ -37,8 +83,15 @@ describe("activeOffers: URL未設定のものは出さない", () => {
     expect(activeOffers(offers)).toHaveLength(0);
   });
 
-  it("全て未設定なら空配列（＝提携前は何も表示しない）", () => {
-    expect(activeOffers(AFFILIATE.furusato.map((o) => ({ ...o, url: "" })))).toEqual([]);
+  it("HTMLスニペットを貼った場合もURLに正規化されて有効になる", () => {
+    const offers = [{ name: "楽天", desc: "d", url: '<a href="https://hb.afl.rakuten.co.jp/z">楽天</a>' }];
+    const active = activeOffers(offers);
+    expect(active).toHaveLength(1);
+    expect(active[0].url).toBe("https://hb.afl.rakuten.co.jp/z");
+  });
+
+  it("不正なスキームだけのオファーは表示されない", () => {
+    expect(activeOffers([{ name: "X", desc: "d", url: "javascript:alert(1)" }])).toEqual([]);
   });
 });
 
@@ -55,8 +108,8 @@ describe("isEnabled: 表示可否の判定", () => {
 describe("提携前の初期状態", () => {
   it("初期状態では全オファーのurlが空（偽リンクを公開しない）", () => {
     const all = [...AFFILIATE.furusato, ...AFFILIATE.kabe];
-    const configured = all.filter((o) => (o.url ?? "").trim());
-    // 提携後にこのテストが落ちたら、URLを設定した証拠なので期待値を更新する
+    const configured = all.filter((o) => normalizeLink(o.url));
+    // リンクを設定したらこのテストは落ちる。設定した証拠なので期待値を更新すること。
     expect(configured.length).toBe(0);
   });
 });
