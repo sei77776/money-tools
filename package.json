@@ -6,7 +6,7 @@
   "description": "お金の制度計算ツール群（ふるさと納税シミュレーター＋管理 / 年収の壁・手取りシミュレーター）",
   "scripts": {
     "test": "vitest run",
-    "serve": "python3 -m http.server 8931 --directory public"
+    "serve": "python3 -m http.server 8942 --directory public"
   },
   "devDependencies": {
     "playwright": "^1.62.1",

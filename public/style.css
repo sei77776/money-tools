@@ -284,6 +284,36 @@ details summary { cursor: pointer; font-weight: 600; min-height: 44px; display: 
 .feature b { display: block; }
 .feature span { font-size: 0.88rem; color: var(--ink-soft); }
 
+/* ---- pSEOページ（早見表・個別ページ） ---- */
+.crumbs {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.crumbs a { color: var(--ink-soft); }
+.crumbs a:hover { color: var(--brand); }
+a.btn-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--primary-bg);
+  color: var(--primary-ink);
+  text-decoration: none;
+  font-weight: 700;
+  transition: filter 0.18s, transform 0.18s;
+}
+a.btn-link:hover { filter: brightness(1.15); transform: translateY(-1px); }
+tr.is-current { background: var(--brand-soft); }
+tr.is-current th, tr.is-current td { font-weight: 700; }
+section.ad { margin: 28px 0; }
+main details { border-bottom: 1px solid var(--line); }
+main details:last-child { border-bottom: 0; }
+main details p { margin: 0 0 14px; color: var(--ink-soft); font-size: 0.92rem; }
+main ul { padding-left: 1.2em; }
+main ul li { margin: 6px 0; }
+
 /* ---- アフィリエイト枠（ステマ規制: 「広告」ラベルを明瞭に） ---- */
 .ad-label {
   background: var(--ink-soft);

@@ -1,7 +1,7 @@
 // 3ページの実描画・計算動作のスモークチェック（npm run serve を起動した状態で実行）
 import { chromium } from "playwright";
 
-const BASE = "http://127.0.0.1:8931";
+const BASE = "http://127.0.0.1:8942";
 const results = [];
 const check = (name, ok, detail = "") => {
   results.push({ name, ok, detail });
@@ -11,13 +11,18 @@ const check = (name, ok, detail = "") => {
 // 環境同梱のChromiumを直接指定（Playwrightバージョンとの不一致を回避）
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
 const page = await browser.newPage();
+// 外部リクエスト（Google Fonts等）は中断する。
+// 検証対象はサイト自身の挙動であり、外部の到達性でテストが不安定になるのを防ぐ。
+await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.abort());
+page.setDefaultNavigationTimeout(15_000);
+page.setDefaultTimeout(15_000);
 const pageErrors = [];
 page.on("pageerror", (e) => pageErrors.push(String(e)));
 
 // index
 await page.goto(`${BASE}/index.html`);
 check("index: タイトル表示", (await page.title()).includes("お金の制度計算ツール"));
-check("index: 2ツールへのリンク", (await page.locator(".tool-link").count()) === 2);
+check("index: 3カード（2ツール＋早見表）へのリンク", (await page.locator(".tool-link").count()) === 3);
 
 // furusato
 await page.goto(`${BASE}/furusato.html`);
@@ -92,6 +97,29 @@ check("ad: 「広告」ラベルが表示される（ステマ規制）", /class
 check("ad: 開示文が表示される", adHtml.includes("成果報酬"));
 check("ad: rel=sponsored nofollow noopener が付く", adHtml.includes('rel="sponsored nofollow noopener"'));
 check("ad: 別タブで開く", adHtml.includes('target="_blank"'));
+
+// ---- pSEO: 早見表ハブ ----
+await page.goto(`${BASE}/furusato/`);
+check("pseo: ハブのタイトル", (await page.title()).includes("早見表"));
+const hubLinks = await page.locator("main table.plain a").count();
+check("pseo: ハブから個別ページへのリンク数", hubLinks >= 50, `${hubLinks} links`);
+check("pseo: ハブのcanonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/furusato/");
+
+// ---- pSEO: 個別ページ ----
+await page.goto(`${BASE}/furusato/nenshu-500man-dokushin/`);
+check("pseo: 個別ページのタイトル", (await page.title()).includes("年収500万円"));
+// ツール側の計算結果（58,000円）と生成ページの数値が一致すること
+check("pseo: 上限額がツールの計算と一致", (await page.textContent(".result-big .num")).includes("58,000"));
+check("pseo: パンくずが表示される", await page.locator("nav.crumbs").isVisible());
+const jsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => e.textContent));
+check("pseo: JSON-LDが1件", jsonld.length === 1);
+const graph = JSON.parse(jsonld[0])["@graph"];
+check("pseo: BreadcrumbList", graph.some((g) => g["@type"] === "BreadcrumbList"));
+check("pseo: FAQPage", graph.some((g) => g["@type"] === "FAQPage" && g.mainEntity.length >= 3));
+check("pseo: 近隣年収の内部リンク", (await page.locator('main a[href^="../nenshu-"]').count()) >= 5);
+check("pseo: 広告枠（広告ラベル付き）", (await page.textContent("section.ad .ad-label")).trim() === "広告");
+check("pseo: 16歳未満の注記", (await page.textContent("main")).includes("16歳未満"));
+check("pseo: 免責", (await page.textContent("footer")).includes("概算"));
 
 // legal
 await page.goto(`${BASE}/legal.html`);
