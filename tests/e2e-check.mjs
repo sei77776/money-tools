@@ -72,6 +72,15 @@ check("kabe: 90万・51人以上・週20hで加入（年収非依存）", note90
 // アフィリエイト枠: kabeは提携案件が無いため非表示のまま
 check("ad: 広告枠が非表示（kabe・提携案件なし）", await page.locator("#offers").isHidden());
 
+// クロスセル: 壁判定の結果と一緒に、世帯訴求のふるさと納税導線が見える
+check("cross-sell: 世帯訴求カードが表示される", await page.locator("#cross-sell").isVisible());
+check("cross-sell: ふるさと納税ツールへのリンク", (await page.getAttribute("#cross-sell a.btn-link", "href")) === "furusato.html");
+
+// llms.txt（AI検索対策）が配信されている
+const llmsResp = await page.request.get(`${BASE}/llms.txt`);
+check("llms: llms.txtが200で配信される", llmsResp.status() === 200);
+check("llms: 検証済みの制度要点を含む", (await llmsResp.text()).includes("178万円"));
+
 // アフィリエイト枠: furusatoは楽天リンク設定済みなので実際に表示される
 await page.goto(`${BASE}/furusato.html`);
 await page.click("#calc-form button.primary");
