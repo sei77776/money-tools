@@ -1,0 +1,35 @@
+name: Fetch Search Console data
+
+on:
+  schedule:
+    # 毎週月曜 06:00 JST（日曜 21:00 UTC）。週次の収益改善ループ（月曜9時 JST）の前に実行
+    - cron: "0 21 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch search analytics
+        env:
+          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+        run: |
+          if [ -z "$GSC_SA_KEY" ]; then
+            echo "GSC_SA_KEY secret is not set; skipping." && exit 0
+          fi
+          node tools/fetch-gsc.mjs
+      - name: Commit data
+        run: |
+          git config user.name "gsc-fetch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/gsc || true
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "data: Search Consoleの週次データを更新"
+          git push
