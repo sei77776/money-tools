@@ -49,7 +49,7 @@ function renderRecords() {
       (r, i) => `<tr>
         <td>${r.date}</td><td>${escapeHtml(r.name)}</td>
         <td class="num">${yen(r.amount)} 円</td>
-        <td>${r.oneStop ? "申請予定" : "—"}</td>
+        <td>${r.oneStop ? "申請予定" : "-"}</td>
         <td><button class="ghost" data-del="${i}">削除</button></td>
       </tr>`
     )

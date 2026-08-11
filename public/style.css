@@ -108,13 +108,14 @@ header.site nav a:hover { color: var(--brand); background: var(--brand-soft); }
 header.site nav a[aria-current="page"] { color: var(--brand); background: var(--brand-soft); font-weight: 700; }
 
 /* ---- レイアウト ---- */
-main { max-width: 880px; margin: 0 auto; padding: 36px 18px 72px; }
+main { max-width: 880px; margin: 0 auto; padding: 44px 18px 80px; }
 h1 {
-  font-size: clamp(1.5rem, 4.2vw, 2.1rem);
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-  margin: 0.2em 0 0.35em;
+  font-size: clamp(1.7rem, 4.6vw, 2.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  margin: 0.2em 0 0.4em;
   font-weight: 800;
+  text-wrap: balance;
 }
 h1 .accent { color: var(--accent); }
 h2 {
@@ -184,7 +185,7 @@ button.primary {
   transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
 }
 button.primary:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: var(--shadow); }
-button.primary:active { transform: translateY(0); }
+button.primary:active { transform: translateY(0) scale(0.98); }
 button.ghost {
   display: inline-flex;
   align-items: center;
@@ -208,13 +209,18 @@ button.ghost:hover { background: var(--brand-soft); }
 }
 
 /* ---- 結果表示 ---- */
+@keyframes result-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .result-big {
   background: linear-gradient(135deg, var(--brand-soft), var(--accent-soft));
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 26px 24px;
+  padding: 28px 24px;
   text-align: center;
   margin: 18px 0;
+  animation: result-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .result-big .num {
   font-family: "Lexend", sans-serif;
@@ -279,6 +285,40 @@ details summary { cursor: pointer; font-weight: 600; min-height: 44px; display: 
 }
 .tool-link h2 { margin: 0 0 6px; font-size: 1.05rem; }
 .tool-link .cta { color: var(--brand); font-weight: 700; font-size: 0.9rem; }
+
+/* フィーチャードカード（収益1位ツールを最上段・全幅で） */
+.tool-link.featured { margin: 18px 0 16px; }
+.tool-link.featured .card {
+  display: grid;
+  gap: 20px;
+  align-items: center;
+  border-width: 1.5px;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+}
+@media (min-width: 720px) {
+  .tool-link.featured .card { grid-template-columns: 1.6fr 1fr; padding: 28px 30px; }
+}
+.featured-example {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--brand-soft), var(--accent-soft));
+  text-align: center;
+}
+.featured-example .ex-label { font-size: 0.8rem; color: var(--ink-soft); }
+.featured-example .ex-num {
+  font-family: "Lexend", sans-serif;
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--brand);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.featured-example .ex-unit { font-size: 0.55em; margin-left: 2px; }
+.featured-example .ex-note { font-size: 0.78rem; color: var(--ink-soft); }
 .feature { display: flex; gap: 12px; align-items: flex-start; }
 .feature svg { color: var(--accent); flex: none; margin-top: 4px; }
 .feature b { display: block; }

@@ -15,7 +15,7 @@ import { AFFILIATE, activeOffers } from "../public/lib/affiliate.js";
 
 const BASE = "https://sei77776.github.io/money-tools";
 const OUT = new URL("../public/furusato/", import.meta.url).pathname;
-const TODAY = "2026-08-08";
+const TODAY = "2026-08-12";
 
 const yen = (n) => n.toLocaleString("ja-JP");
 const esc = (s) =>
@@ -242,7 +242,7 @@ function hubHtml(pages) {
         const row = g.rows.find((r) => r.income === income);
         return row
           ? `<td class="num"><a href="${row.slug}/">${yen(row.safeLimit)}円</a></td>`
-          : `<td class="num note">—</td>`;
+          : `<td class="num note">対象外</td>`;
       });
       return `<tr><th>年収${Math.round(income / 10_000)}万円</th>${cells.join("")}</tr>`;
     }).join("\n    ")}
@@ -296,7 +296,7 @@ ${header(1)}
 
   <div class="card" style="overflow-x:auto">
     ${table}
-    <p class="note">社会保険に加入する給与所得者で、住宅ローン控除・医療費控除等の他の控除が無い場合の概算です。「—」は住民税の所得割が発生せず、ふるさと納税による控除が受けられない目安の帯です。<strong>16歳未満の子どもは扶養控除の対象外</strong>のため扶養親族の人数に含めていません。</p>
+    <p class="note">社会保険に加入する給与所得者で、住宅ローン控除・医療費控除等の他の控除が無い場合の概算です。「対象外」は住民税の所得割が発生せず、ふるさと納税による控除が受けられない目安の帯です。<strong>16歳未満の子どもは扶養控除の対象外</strong>のため扶養親族の人数に含めていません。</p>
   </div>
 
   ${adBlock()}
