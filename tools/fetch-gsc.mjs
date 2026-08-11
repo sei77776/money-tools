@@ -2,10 +2,11 @@
  * Search Console APIから検索パフォーマンスを取得して data/gsc/ に保存する。
  * GitHub Actions（.github/workflows/gsc-fetch.yml）から週次で実行される。
  *
- * 必要な環境変数:
- *   GSC_SA_KEY: サービスアカウントのJSONキー（丸ごと）
+ * 必要な環境変数（どちらか一方）:
+ *   GSC_ACCESS_TOKEN: Workload Identity連携で取得済みのアクセストークン（推奨・鍵レス）
+ *   GSC_SA_KEY:       サービスアカウントのJSONキー（フォールバック）
  *
- * 認証はサービスアカウントのJWT（RS256）→ OAuthトークン交換。外部依存なし。
+ * 鍵方式の場合はJWT（RS256）→ OAuthトークン交換。外部依存なし。
  */
 import { createSign } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -47,8 +48,9 @@ async function query(token, body) {
   return (await resp.json()).rows ?? [];
 }
 
-const sa = JSON.parse(process.env.GSC_SA_KEY ?? "");
-const token = await getAccessToken(sa);
+const token =
+  process.env.GSC_ACCESS_TOKEN?.trim() ||
+  (await getAccessToken(JSON.parse(process.env.GSC_SA_KEY ?? "")));
 
 // GSCのデータは2日ほど遅れるため、終了日は2日前。過去28日分を取得
 const day = (offset) => new Date(Date.now() - offset * 86_400_000).toISOString().slice(0, 10);
