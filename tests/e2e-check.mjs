@@ -130,6 +130,41 @@ check("pseo: 広告枠（広告ラベル付き）", (await page.textContent("sec
 check("pseo: 16歳未満の注記", (await page.textContent("main")).includes("16歳未満"));
 check("pseo: 免責", (await page.textContent("footer")).includes("概算"));
 
+// ---- 記事: ふるさと納税はいつまで？ ----
+await page.goto(`${BASE}/furusato-itsumade.html`);
+check("記事(いつまで): タイトル", (await page.title()).includes("いつまで"));
+check("記事(いつまで): canonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/furusato-itsumade.html");
+const itsumadeJsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => JSON.parse(e.textContent)));
+check("記事(いつまで): FAQPage構造化データ", itsumadeJsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "FAQPage")));
+const itsumadeBody = await page.textContent("main");
+check("記事(いつまで): 12月31日の期限を明記", itsumadeBody.includes("12月31日"));
+check("記事(いつまで): 年末のカウントダウン表示", /あと\d+日/.test(await page.textContent("#yearend-countdown")));
+check("記事(いつまで): ツールへの内部リンク", (await page.locator('main a[href="furusato.html"]').count()) >= 1);
+check("記事(いつまで): 関連記事への内部リンク", (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1);
+check("記事(いつまで): 広告枠（ラベル＋開示文）", await page.locator("#offers").isVisible() && (await page.textContent("#offers .ad-label")).trim() === "広告" && (await page.textContent("#offers")).includes("成果報酬"));
+check("記事(いつまで): 免責", (await page.textContent("footer")).includes("概算"));
+
+// ---- 記事: ワンストップ特例のやり方 ----
+await page.goto(`${BASE}/onestop-guide.html`);
+check("記事(ワンストップ): タイトル", (await page.title()).includes("ワンストップ"));
+check("記事(ワンストップ): canonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/onestop-guide.html");
+const onestopJsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => JSON.parse(e.textContent)));
+check("記事(ワンストップ): FAQPage構造化データ", onestopJsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "FAQPage")));
+const onestopBody = await page.textContent("main");
+check("記事(ワンストップ): 1月10日必着を明記", onestopBody.includes("1月10日") && onestopBody.includes("必着"));
+check("記事(ワンストップ): 期限カウントダウン表示", /あと\d+日/.test(await page.textContent("#onestop-countdown")));
+check("記事(ワンストップ): 5自治体の条件を明記", onestopBody.includes("5自治体"));
+check("記事(ワンストップ): ツールへの内部リンク", (await page.locator('main a[href="furusato.html"]').count()) >= 1);
+check("記事(ワンストップ): 広告枠（ラベル＋開示文）", await page.locator("#offers").isVisible() && (await page.textContent("#offers .ad-label")).trim() === "広告");
+
+// ---- sitemap に記事が入っている ----
+const sitemapXml = await (await page.request.get(`${BASE}/sitemap.xml`)).text();
+check("sitemap: 記事2本を含む", sitemapXml.includes("furusato-itsumade.html") && sitemapXml.includes("onestop-guide.html"));
+
+// ---- index から記事への導線（孤立ページゼロ） ----
+await page.goto(`${BASE}/index.html`);
+check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1);
+
 // legal
 await page.goto(`${BASE}/legal.html`);
 check("legal: タイトル", (await page.title()).includes("免責事項・プライバシーポリシー"));
