@@ -58,6 +58,12 @@ describe("buildPageData: 各ページ固有のデータを組み立てる", () =
     expect(page.description.length).toBeLessThanOrEqual(160);
   });
 
+  it("タイトルに上限額（答えの金額）が入る（CTR対策）", () => {
+    expect(page.title).toContain(`${page.safeLimit.toLocaleString("ja-JP")}円`);
+    // 検索結果で切れにくい長さに収める
+    expect(page.title.length).toBeLessThanOrEqual(45);
+  });
+
   it("近隣年収の早見表を持つ（同じ家族構成で前後を比較）", () => {
     expect(page.neighbors.length).toBeGreaterThanOrEqual(3);
     for (const n of page.neighbors) {

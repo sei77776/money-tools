@@ -18,6 +18,12 @@ export function donationYearEnd(now = new Date()) {
   return new Date(now.getFullYear(), 11, 31);
 }
 
+/** 社会保険の週20時間ルール（賃金要件撤廃）の施行日 */
+export function hoursRuleEffectiveDate() {
+  const [y, m, d] = PARAMS.socialInsurance.hoursRule.effectiveFrom.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 /** now から target までの残り日数（日付単位・当日は0） */
 export function daysUntil(now, target) {
   const a = new Date(now.getFullYear(), now.getMonth(), now.getDate());

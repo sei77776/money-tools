@@ -117,6 +117,7 @@ check("pseo: ハブのcanonical", (await page.getAttribute('link[rel="canonical"
 // ---- pSEO: 個別ページ ----
 await page.goto(`${BASE}/furusato/nenshu-500man-dokushin/`);
 check("pseo: 個別ページのタイトル", (await page.title()).includes("年収500万円"));
+check("pseo: タイトルに上限額（CTR対策）", (await page.title()).includes("58,000円"));
 // ツール側の計算結果（58,000円）と生成ページの数値が一致すること
 check("pseo: 上限額がツールの計算と一致", (await page.textContent(".result-big .num")).includes("58,000"));
 check("pseo: パンくずが表示される", await page.locator("nav.crumbs").isVisible());
@@ -157,13 +158,26 @@ check("記事(ワンストップ): 5自治体の条件を明記", onestopBody.in
 check("記事(ワンストップ): ツールへの内部リンク", (await page.locator('main a[href="furusato.html"]').count()) >= 1);
 check("記事(ワンストップ): 広告枠（ラベル＋開示文）", await page.locator("#offers").isVisible() && (await page.textContent("#offers .ad-label")).trim() === "広告");
 
+// ---- 記事: 106万円の壁の撤廃 ----
+await page.goto(`${BASE}/kabe-106man.html`);
+check("記事(106万): タイトル", (await page.title()).includes("106万"));
+check("記事(106万): canonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/kabe-106man.html");
+const kabe106Jsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => JSON.parse(e.textContent)));
+check("記事(106万): FAQPage構造化データ", kabe106Jsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "FAQPage")));
+const kabe106Body = await page.textContent("main");
+check("記事(106万): 週20時間の新基準を明記", kabe106Body.includes("週20時間") && kabe106Body.includes("撤廃"));
+check("記事(106万): 51人以上の企業規模要件を明記", kabe106Body.includes("51人以上"));
+check("記事(106万): 施行日カウントダウン", /あと\d+日|施行済み/.test(await page.textContent("#hoursrule-countdown")));
+check("記事(106万): ツールへの内部リンク", (await page.locator('main a[href="kabe.html"]').count()) >= 1);
+check("記事(106万): 広告枠なし（文脈適合ルール）", (await page.locator("#offers").count()) === 0);
+
 // ---- sitemap に記事が入っている ----
 const sitemapXml = await (await page.request.get(`${BASE}/sitemap.xml`)).text();
-check("sitemap: 記事2本を含む", sitemapXml.includes("furusato-itsumade.html") && sitemapXml.includes("onestop-guide.html"));
+check("sitemap: 記事3本を含む", sitemapXml.includes("furusato-itsumade.html") && sitemapXml.includes("onestop-guide.html") && sitemapXml.includes("kabe-106man.html"));
 
 // ---- index から記事への導線（孤立ページゼロ） ----
 await page.goto(`${BASE}/index.html`);
-check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1);
+check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1 && (await page.locator('main a[href="kabe-106man.html"]').count()) >= 1);
 
 // legal
 await page.goto(`${BASE}/legal.html`);

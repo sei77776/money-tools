@@ -112,7 +112,7 @@ export function buildPageData(income, family) {
     neighbors,
     familyComparison,
     insight,
-    title: `年収${man(income)}万円・${family.short}のふるさと納税 上限額はいくら？【2026年対応】`,
+    title: `年収${man(income)}万円・${family.short}のふるさと納税上限額は約${r.safeLimit.toLocaleString("ja-JP")}円【2026年】`,
     description: `年収${man(income)}万円・${family.label}の場合、ふるさと納税で自己負担2,000円に収まる控除上限額の目安は約${r.safeLimit.toLocaleString("ja-JP")}円です。2026年（令和8年）の制度に対応した計算内訳と、年収別・家族構成別の早見表を掲載。`,
   };
 }

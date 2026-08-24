@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { nextOneStopDeadline, donationYearEnd, daysUntil } from "../public/lib/deadline.js";
+import { nextOneStopDeadline, donationYearEnd, daysUntil, hoursRuleEffectiveDate } from "../public/lib/deadline.js";
 
 describe("nextOneStopDeadline", () => {
   it("年の途中なら翌年1月10日を返す", () => {
@@ -37,6 +37,15 @@ describe("donationYearEnd", () => {
   it("12月31日当日も当年", () => {
     const d = donationYearEnd(new Date(2026, 11, 31));
     expect(d.getFullYear()).toBe(2026);
+  });
+});
+
+describe("hoursRuleEffectiveDate", () => {
+  it("params2026.jsの施行日（2026-10-01）をDateで返す", () => {
+    const d = hoursRuleEffectiveDate();
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(9);
+    expect(d.getDate()).toBe(1);
   });
 });
 

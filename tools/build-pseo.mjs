@@ -323,6 +323,7 @@ function sitemapXml(pages) {
     { loc: `${BASE}/furusato/`, priority: "0.8", freq: "monthly" },
     { loc: `${BASE}/furusato-itsumade.html`, priority: "0.7", freq: "monthly" },
     { loc: `${BASE}/onestop-guide.html`, priority: "0.7", freq: "monthly" },
+    { loc: `${BASE}/kabe-106man.html`, priority: "0.7", freq: "monthly" },
     ...pages.map((p) => ({ loc: `${BASE}/furusato/${p.slug}/`, priority: "0.6", freq: "monthly" })),
     { loc: `${BASE}/legal.html`, priority: "0.3", freq: "yearly" },
   ];
@@ -356,4 +357,4 @@ await writeFile(new URL("../public/sitemap.xml", import.meta.url).pathname, site
 
 const skipped = SALARY_STEPS.length * FAMILY_PATTERNS.length - pages.length;
 console.log(`generated ${pages.length} pages + hub (skipped ${skipped} zero-limit combos)`);
-console.log(`sitemap: ${pages.length + 7} urls`);
+console.log(`sitemap: ${pages.length + 8} urls`);
