@@ -404,6 +404,25 @@ footer.site {
   margin-inline: auto;
 }
 
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.footer-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 @media (max-width: 480px) {
   .card { padding: 18px 16px; }
   main { padding-top: 24px; }

@@ -179,6 +179,18 @@ check("sitemap: 記事3本を含む", sitemapXml.includes("furusato-itsumade.htm
 await page.goto(`${BASE}/index.html`);
 check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1 && (await page.locator('main a[href="kabe-106man.html"]').count()) >= 1);
 
+// ---- フッターナビ（全ページ共通の内部リンク網） ----
+for (const path of ["/index.html", "/furusato-itsumade.html", "/legal.html", "/furusato/nenshu-500man-dokushin/"]) {
+  await page.goto(`${BASE}${path}`);
+  const navLinks = await page.locator("footer nav.footer-nav a").count();
+  check(`footer-nav: ${path} に6リンク以上`, navLinks >= 6, `${navLinks} links`);
+}
+
+// ---- IndexNow キーファイルが配信される ----
+const inKey = "2821f3f04c015e8efdb21358662e7154";
+const inResp = await page.request.get(`${BASE}/${inKey}.txt`);
+check("indexnow: キーファイルが200で配信され内容が一致", inResp.status() === 200 && (await inResp.text()).trim() === inKey);
+
 // legal
 await page.goto(`${BASE}/legal.html`);
 check("legal: タイトル", (await page.title()).includes("免責事項・プライバシーポリシー"));

@@ -43,3 +43,12 @@ jobs:
           path: public
       - id: deployment
         uses: actions/deploy-pages@v4
+      # デプロイ成功後、IndexNow対応の検索エンジン（Bing等）へ全URLを通知。
+      # 失敗してもデプロイの成否には影響させない。
+      - uses: actions/setup-node@v4
+        if: success()
+        with:
+          node-version: 22
+      - run: node tools/ping-indexnow.mjs
+        if: success()
+        continue-on-error: true
