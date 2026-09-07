@@ -22,7 +22,7 @@ page.on("pageerror", (e) => pageErrors.push(String(e)));
 // index
 await page.goto(`${BASE}/index.html`);
 check("index: タイトル表示", (await page.title()).includes("お金の制度計算ツール"));
-check("index: 3カード（2ツール＋早見表）へのリンク", (await page.locator(".tool-link").count()) === 3);
+check("index: 4カード（2ツール＋早見表2種）へのリンク", (await page.locator(".tool-link").count()) === 4);
 
 // furusato
 await page.goto(`${BASE}/furusato.html`);
@@ -178,6 +178,33 @@ check("sitemap: 記事3本を含む", sitemapXml.includes("furusato-itsumade.htm
 // ---- index から記事への導線（孤立ページゼロ） ----
 await page.goto(`${BASE}/index.html`);
 check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1 && (await page.locator('main a[href="kabe-106man.html"]').count()) >= 1);
+
+// ---- 手取りpSEO: ハブ ----
+await page.goto(`${BASE}/tedori/`);
+check("tedori: ハブのタイトル", (await page.title()).includes("手取り早見表"));
+const tedoriHubLinks = await page.locator("main table.plain a").count();
+check("tedori: ハブから個別ページへのリンク数", tedoriHubLinks >= 25, `${tedoriHubLinks} links`);
+check("tedori: ハブのcanonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/tedori/");
+
+// ---- 手取りpSEO: 個別ページ（一般帯） ----
+await page.goto(`${BASE}/tedori/nenshu-400man/`);
+check("tedori: タイトルに手取り額（CTR対策）", /約\d+万円/.test(await page.title()));
+check("tedori: パンくず", await page.locator("nav.crumbs").isVisible());
+const tedoriJsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => JSON.parse(e.textContent)));
+check("tedori: BreadcrumbList＋FAQPage", tedoriJsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "BreadcrumbList")) && tedoriJsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "FAQPage")));
+check("tedori: 壁との位置関係の表", (await page.textContent("main")).includes("178万円の壁"));
+check("tedori: 広告枠なし（kabe文脈の適合ルール）", (await page.locator("section.ad, #offers").count()) === 0);
+check("tedori: 同年収のふるさと納税ページへのクロスセル", (await page.locator('main a[href="../../furusato/nenshu-400man-dokushin/"]').count()) >= 1);
+check("tedori: ツールへの内部リンク", (await page.locator('main a[href="../../kabe.html"]').count()) >= 1);
+
+// ---- 手取りpSEO: 壁ゾーンページは加入/未加入の比較を持つ ----
+await page.goto(`${BASE}/tedori/nenshu-120man/`);
+const tedori120 = await page.textContent("main");
+check("tedori: 壁ゾーンで加入/未加入の比較", tedori120.includes("未加入（被扶養）の場合") && tedori120.includes("勤務先で加入した場合"));
+
+// ---- sitemap に手取りページが入っている ----
+const sitemapXml2 = await (await page.request.get(`${BASE}/sitemap.xml`)).text();
+check("sitemap: tedoriハブと個別ページを含む", sitemapXml2.includes("/tedori/</loc>") && sitemapXml2.includes("/tedori/nenshu-400man/"));
 
 // ---- フッターナビ（全ページ共通の内部リンク網） ----
 for (const path of ["/index.html", "/furusato-itsumade.html", "/legal.html", "/furusato/nenshu-500man-dokushin/"]) {

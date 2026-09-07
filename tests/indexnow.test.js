@@ -9,10 +9,11 @@ describe("urlsFromSitemap", () => {
     expect(urlsFromSitemap(xml)).toEqual(["https://example.com/", "https://example.com/a.html"]);
   });
 
-  it("実際のsitemap.xmlから全URL（73件）を抽出できる", () => {
+  it("実際のsitemap.xmlから全URLを漏れなく抽出できる", () => {
     const xml = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
     const urls = urlsFromSitemap(xml);
-    expect(urls.length).toBe(73);
+    expect(urls.length).toBe((xml.match(/<url>/g) ?? []).length);
+    expect(urls.length).toBeGreaterThanOrEqual(90);
     expect(urls[0]).toBe("https://sei77776.github.io/money-tools/");
   });
 });
