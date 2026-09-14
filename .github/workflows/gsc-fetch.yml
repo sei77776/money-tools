@@ -32,6 +32,13 @@ jobs:
         env:
           GSC_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: node tools/fetch-gsc.mjs
+      # 主要ページのインデックス状態診断（URL Inspection API）。
+      # 失敗しても検索データの保存は行う
+      - name: Inspect index coverage
+        env:
+          GSC_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: node tools/inspect-urls.mjs
+        continue-on-error: true
       - name: Commit data
         run: |
           git config user.name "gsc-fetch-bot"
