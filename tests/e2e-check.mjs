@@ -158,6 +158,20 @@ check("記事(ワンストップ): 5自治体の条件を明記", onestopBody.in
 check("記事(ワンストップ): ツールへの内部リンク", (await page.locator('main a[href="furusato.html"]').count()) >= 1);
 check("記事(ワンストップ): 広告枠（ラベル＋開示文）", await page.locator("#offers").isVisible() && (await page.textContent("#offers .ad-label")).trim() === "広告");
 
+// ---- 記事: ふるさと納税のやり方（初心者向け） ----
+await page.goto(`${BASE}/furusato-yarikata.html`);
+check("記事(やり方): タイトル", (await page.title()).includes("やり方"));
+check("記事(やり方): canonical", (await page.getAttribute('link[rel="canonical"]', "href")) === "https://sei77776.github.io/money-tools/furusato-yarikata.html");
+const yarikataJsonld = await page.$$eval('script[type="application/ld+json"]', (els) => els.map((e) => JSON.parse(e.textContent)));
+check("記事(やり方): FAQPage構造化データ", yarikataJsonld.some((j) => (j["@graph"] ?? [j]).some((g) => g["@type"] === "FAQPage")));
+check("記事(やり方): 5ステップの手順", (await page.locator("main ol.steps > li").count()) === 5);
+const yarikataBody = await page.textContent("main");
+check("記事(やり方): 自己負担2,000円の説明", yarikataBody.includes("2,000円"));
+check("記事(やり方): ツールへの内部リンク", (await page.locator('main a[href="furusato.html"]').count()) >= 1);
+check("記事(やり方): ワンストップ記事への内部リンク", (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1);
+check("記事(やり方): 広告枠（ラベル＋開示文）", await page.locator("#offers").isVisible() && (await page.textContent("#offers .ad-label")).trim() === "広告" && (await page.textContent("#offers")).includes("成果報酬"));
+check("記事(やり方): 免責", (await page.textContent("footer")).includes("概算"));
+
 // ---- 記事: 106万円の壁の撤廃 ----
 await page.goto(`${BASE}/kabe-106man.html`);
 check("記事(106万): タイトル", (await page.title()).includes("106万"));
@@ -173,11 +187,11 @@ check("記事(106万): 広告枠なし（文脈適合ルール）", (await page.
 
 // ---- sitemap に記事が入っている ----
 const sitemapXml = await (await page.request.get(`${BASE}/sitemap.xml`)).text();
-check("sitemap: 記事3本を含む", sitemapXml.includes("furusato-itsumade.html") && sitemapXml.includes("onestop-guide.html") && sitemapXml.includes("kabe-106man.html"));
+check("sitemap: 記事4本を含む", sitemapXml.includes("furusato-itsumade.html") && sitemapXml.includes("onestop-guide.html") && sitemapXml.includes("kabe-106man.html") && sitemapXml.includes("furusato-yarikata.html"));
 
 // ---- index から記事への導線（孤立ページゼロ） ----
 await page.goto(`${BASE}/index.html`);
-check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1 && (await page.locator('main a[href="kabe-106man.html"]').count()) >= 1);
+check("index: 記事への内部リンク", (await page.locator('main a[href="furusato-itsumade.html"]').count()) >= 1 && (await page.locator('main a[href="onestop-guide.html"]').count()) >= 1 && (await page.locator('main a[href="kabe-106man.html"]').count()) >= 1 && (await page.locator('main a[href="furusato-yarikata.html"]').count()) >= 1);
 
 // ---- 手取りpSEO: ハブ ----
 await page.goto(`${BASE}/tedori/`);

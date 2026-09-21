@@ -334,6 +334,7 @@ function sitemapXml(pages, tedoriPages) {
     { loc: `${BASE}/kabe.html`, priority: "0.9", freq: "monthly" },
     { loc: `${BASE}/furusato/`, priority: "0.8", freq: "monthly" },
     { loc: `${BASE}/tedori/`, priority: "0.8", freq: "monthly" },
+    { loc: `${BASE}/furusato-yarikata.html`, priority: "0.7", freq: "monthly" },
     { loc: `${BASE}/furusato-itsumade.html`, priority: "0.7", freq: "monthly" },
     { loc: `${BASE}/onestop-guide.html`, priority: "0.7", freq: "monthly" },
     { loc: `${BASE}/kabe-106man.html`, priority: "0.7", freq: "monthly" },
