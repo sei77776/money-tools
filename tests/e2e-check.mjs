@@ -79,7 +79,16 @@ check("cross-sell: ふるさと納税ツールへのリンク", (await page.getA
 // llms.txt（AI検索対策）が配信されている
 const llmsResp = await page.request.get(`${BASE}/llms.txt`);
 check("llms: llms.txtが200で配信される", llmsResp.status() === 200);
-check("llms: 検証済みの制度要点を含む", (await llmsResp.text()).includes("178万円"));
+const llmsTxt = await llmsResp.text();
+check("llms: 検証済みの制度要点を含む", llmsTxt.includes("178万円"));
+check("llms: llms-full.txtへの参照を含む", llmsTxt.includes("llms-full.txt"));
+
+// llms-full.txt（全データ集約版）が配信されている
+const llmsFullResp = await page.request.get(`${BASE}/llms-full.txt`);
+check("llms-full: 200で配信される", llmsFullResp.status() === 200);
+const llmsFullTxt = await llmsFullResp.text();
+check("llms-full: 早見表データを含む（500万・独身=58,000円）", llmsFullTxt.includes("58,000"));
+check("llms-full: 手取りデータを含む", /年収400万円: 手取り約[\d,]+円/.test(llmsFullTxt));
 
 // アフィリエイト枠: furusatoは楽天リンク設定済みなので実際に表示される
 await page.goto(`${BASE}/furusato.html`);

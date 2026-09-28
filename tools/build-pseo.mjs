@@ -13,6 +13,7 @@ import { mkdir, writeFile, rm } from "node:fs/promises";
 import { allPages, FAMILY_PATTERNS, SALARY_STEPS, pageSlug, buildPageData } from "../public/lib/pseo.js";
 import { allTedoriPages, TEDORI_SALARY_STEPS } from "../public/lib/tedori-pseo.js";
 import { AFFILIATE, activeOffers } from "../public/lib/affiliate.js";
+import { buildLlmsFull } from "./llms-full.mjs";
 
 const BASE = "https://sei77776.github.io/money-tools";
 const OUT = new URL("../public/furusato/", import.meta.url).pathname;
@@ -628,6 +629,9 @@ await writeFile(`${TEDORI_OUT}index.html`, tedoriHubHtml(tedoriPages), "utf8");
 
 const sitemap = sitemapXml(pages, tedoriPages);
 await writeFile(new URL("../public/sitemap.xml", import.meta.url).pathname, sitemap, "utf8");
+
+await writeFile(new URL("../public/llms-full.txt", import.meta.url).pathname, buildLlmsFull(pages, tedoriPages), "utf8");
+console.log("llms-full.txt generated");
 
 const skipped = SALARY_STEPS.length * FAMILY_PATTERNS.length - pages.length;
 console.log(`generated ${pages.length} furusato pages + hub (skipped ${skipped} zero-limit combos)`);
