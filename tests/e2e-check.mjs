@@ -190,7 +190,8 @@ check("記事(106万): FAQPage構造化データ", kabe106Jsonld.some((j) => (j[
 const kabe106Body = await page.textContent("main");
 check("記事(106万): 週20時間の新基準を明記", kabe106Body.includes("週20時間") && kabe106Body.includes("撤廃"));
 check("記事(106万): 51人以上の企業規模要件を明記", kabe106Body.includes("51人以上"));
-check("記事(106万): 施行日カウントダウン", /あと\d+日|施行済み/.test(await page.textContent("#hoursrule-countdown")));
+check("記事(106万): 施行済み表示（10/1以降）", (await page.textContent("#hoursrule-countdown")).includes("施行済み"));
+check("記事(106万): 本文が施行後の表現（されました）", kabe106Body.includes("撤廃されました") && !kabe106Body.includes("撤廃されます"));
 check("記事(106万): ツールへの内部リンク", (await page.locator('main a[href="kabe.html"]').count()) >= 1);
 check("記事(106万): 広告枠なし（文脈適合ルール）", (await page.locator("#offers").count()) === 0);
 
