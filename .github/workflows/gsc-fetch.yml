@@ -10,6 +10,11 @@ permissions:
   contents: write
   id-token: write
 
+# 定時実行の遅延と手動実行が重なっても push が競合しないよう直列化する
+concurrency:
+  group: gsc-fetch
+  cancel-in-progress: false
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -46,4 +51,6 @@ jobs:
           git add data/gsc || true
           git diff --cached --quiet && echo "no changes" && exit 0
           git commit -m "data: Search Consoleの週次データを更新"
+          # 直前に他のコミットが入っていても push が落ちないようにする
+          git pull --rebase origin main
           git push
