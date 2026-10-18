@@ -1,0 +1,116 @@
+{
+  "fetchedAt": "2026-10-18T22:44:11.625Z",
+  "site": "https://sei77776.github.io/money-tools/",
+  "indexed": 1,
+  "total": 12,
+  "results": [
+    {
+      "url": "https://sei77776.github.io/money-tools/",
+      "verdict": "PASS",
+      "coverageState": "Submitted and indexed",
+      "robotsTxtState": "ALLOWED",
+      "indexingState": "INDEXING_ALLOWED",
+      "lastCrawlTime": "2026-08-08T10:44:45Z",
+      "googleCanonical": "https://sei77776.github.io/money-tools/"
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/furusato.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/kabe.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/furusato/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/tedori/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/furusato-yarikata.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/furusato-itsumade.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/onestop-guide.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/kabe-106man.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/legal.html",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/furusato/nenshu-200man-dokushin/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    },
+    {
+      "url": "https://sei77776.github.io/money-tools/tedori/nenshu-100man/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null
+    }
+  ]
+}
