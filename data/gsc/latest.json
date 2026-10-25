@@ -1,22 +1,14 @@
 {
-  "fetchedAt": "2026-10-18T22:42:39.946Z",
+  "fetchedAt": "2026-10-25T22:59:23.199Z",
   "site": "https://sei77776.github.io/money-tools/",
   "range": {
-    "startDate": "2026-09-19",
-    "endDate": "2026-10-16"
+    "startDate": "2026-09-26",
+    "endDate": "2026-10-23"
   },
   "totals": {
     "clicks": 0,
-    "impressions": 1
+    "impressions": 0
   },
   "topQueries": [],
-  "topPages": [
-    {
-      "page": "/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 2
-    }
-  ]
+  "topPages": []
 }
