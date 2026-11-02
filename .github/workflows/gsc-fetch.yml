@@ -51,6 +51,8 @@ jobs:
           git add data/gsc || true
           git diff --cached --quiet && echo "no changes" && exit 0
           git commit -m "data: Search Consoleの週次データを更新"
-          # 直前に他のコミットが入っていても push が落ちないようにする
-          git pull --rebase origin main
+          # 直前に他のコミットが入っていても push が落ちないようにする。
+          # 同じデータファイルを両者が更新した場合は、この実行の（より新しい）
+          # データを優先して解決する（rebase中の -X theirs は自分側＝新データ）
+          git pull --rebase -X theirs origin main
           git push
