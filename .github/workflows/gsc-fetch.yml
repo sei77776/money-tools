@@ -2,8 +2,9 @@ name: Fetch Search Console data
 
 on:
   schedule:
-    # 毎週月曜 06:00 JST（日曜 21:00 UTC）。週次の収益改善ループ（月曜9時 JST）の前に実行
-    - cron: "0 21 * * 0"
+    # 毎週月曜 05:37 JST（日曜 20:37 UTC）。週次の収益改善ループ（月曜9時 JST）の前に実行。
+    # 毎時0分は GitHub Actions の混雑で間引かれやすいため off-minute を使う
+    - cron: "37 20 * * 0"
   workflow_dispatch:
 
 permissions:
